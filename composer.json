@@ -1,5 +1,5 @@
 {
-  "name": "dsc/mercado-livre",
+  "name": "jeancx/dsc-mercado-livre",
   "description": "Client para integração com API do Mercado Livre",
   "type": "library",
   "authors": [
