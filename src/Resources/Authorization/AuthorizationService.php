@@ -20,18 +20,23 @@ class AuthorizationService extends BaseService implements ResourceService
 {
     /**
      * @param string $redirectUri
+     * @param null $state
      * @return string
      */
-    public function getOAuthUrl($redirectUri)
+    public function getOAuthUrl($redirectUri, $state = null)
     {
         $meli = $this->getMeli();
         $environment = $meli->getEnvironment();
 
+        
         $params = [
             "client_id"     => $meli->getClientId(),
             "response_type" => "code",
             "redirect_uri"  => $redirectUri
         ];
+        if ($state) {
+            $params['state'] = $state;
+        }
         return $environment->getAuthUrl('/authorization') . "?" . http_build_query($params);
     }
 
@@ -99,7 +104,8 @@ class AuthorizationService extends BaseService implements ResourceService
      */
     private function getToken($data)
     {
-        $environment = $this->getMeli()->getEnvironment(); 
+        $meli = $this->getMeli();
+        $environment = $meli->getEnvironment(); 
         $uri     = $environment->getOAuthUri();
         $storage = $environment->getConfiguration()->getStorage();
 
@@ -108,7 +114,8 @@ class AuthorizationService extends BaseService implements ResourceService
             Authorization::class
         );
 
-        $accessToken = new AccessToken($storage);
+        $tenant = $meli->getTenantId();
+        $accessToken = new AccessToken($storage, $tenant);
         $accessToken->setToken($authorization->getAccessToken());
         $accessToken->setRefreshToken($authorization->getRefreshToken());
         $accessToken->setExpireIn($authorization->getExpiresIn());
@@ -121,10 +128,12 @@ class AuthorizationService extends BaseService implements ResourceService
      */
     public function isAuthorized()
     {
-        $meli    = $this->getMeli();
-        $storage = $meli->getEnvironment()->getConfiguration()->getStorage();
+        $meli = $this->getMeli();
+        $environment = $meli->getEnvironment();
+        $storage = $environment->getConfiguration()->getStorage();
 
-        $accessToken = new AccessToken($storage);
+        $tenant = $meli->getTenantId();
+        $accessToken = new AccessToken($storage, $tenant);
 
         return $accessToken->isValid();
     }

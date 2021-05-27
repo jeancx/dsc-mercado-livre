@@ -59,8 +59,12 @@ class OAuth2ClientHandler extends Client implements HandlerInterface
      */
     private function authorize(RequestInterface $request)
     {
-        $storage = $this->meli->getEnvironment()->getConfiguration()->getStorage();
-        $accessToken = new AccessToken($storage);
+        $meli = $this->meli;
+        $environment = $meli->getEnvironment();
+        $storage = $environment->getConfiguration()->getStorage();
+
+        $tenant = $meli->getTenantId();
+        $accessToken = new AccessToken($storage, $tenant);
         $token = $accessToken->getToken();
         if(! $token) {
             $this->throwNoAuthorizeException();
@@ -81,12 +85,15 @@ class OAuth2ClientHandler extends Client implements HandlerInterface
 
             $token = $authorization->access_token;
         }
-
-        $oauthparams['access_token'] = $token;
+        
         $queryparams = \GuzzleHttp\Psr7\parse_query($request->getUri()->getQuery());
-        $preparedParams = \GuzzleHttp\Psr7\build_query($oauthparams + $queryparams);
+        $preparedParams = \GuzzleHttp\Psr7\build_query($queryparams);
 
-        return $request->withUri($request->getUri()->withQuery($preparedParams));
+        return $request->withHeader('Authorization', "Bearer $token")
+                       ->withUri(
+                           $request->getUri()->withQuery($preparedParams
+                        )
+                    );
     }
 
     /**

@@ -1,10 +1,10 @@
-# dsc-mercado-livre - Biblioteca de integração com o Mercado Livre
+# Biblioteca de integração com o Mercado Livre (não é a oficial!)
 
 [![Build Status](https://travis-ci.org/discovery-tecnologia/dsc-mercado-livre.svg?branch=master)](http://travis-ci.org/#!/discovery-tecnologia/dsc-mercado-livre)
-[![Packagist](https://img.shields.io/packagist/v/dsc/mercado-livre.svg)](https://github.com/discovery-tecnologia/dsc-mercado-livre)
+[![Packagist](https://img.shields.io/packagist/v/dsc/mercado-livre?include_prereleases)](https://github.com/discovery-tecnologia/dsc-mercado-livre?include_prereleases)
 [![Hex.pm](https://img.shields.io/hexpm/l/plug.svg?style=flat-square)](https://github.com/discovery-tecnologia/dsc-mercado-livre/blob/master/LICENSE)
 
-Biblioteca de integração com a API do Mercado Livre.
+**Obs: essa lib foi construída pela comunidade, se vc deseja utilizar a biblioteca oficial mantida pelo Mercado Livre** - *[clique aqui](https://github.com/mercadolibre/php-sdk)*
 
 > ### Funcionalidades
 
@@ -20,7 +20,7 @@ Biblioteca de integração com a API do Mercado Livre.
 
 > ### Requisitos
 
-- PHP 5.6+
+- PHP 5.6+ ou PHP 7+
 - Autoloader compatível com a PSR-4
 
 > ### Dependências
@@ -34,6 +34,7 @@ Biblioteca de integração com a API do Mercado Livre.
 
 Para instalar a biblioteca basta adicioná-la via [composer](https://getcomposer.org/download/)
 
+PHP 5.6+ (versao 1.*)
 ```composer
 composer require dsc/mercado-livre 1.*
 ```
@@ -43,6 +44,19 @@ Ou no composer.json
 ```json
 {
     "dsc/mercado-livre": "1.*"
+}
+```
+
+PHP 7+ (versao 2.*)
+```composer
+composer require dsc/mercado-livre 2.*
+```
+
+Ou no composer.json
+
+```json
+{
+    "dsc/mercado-livre": "2.*"
 }
 ```
 
@@ -98,6 +112,11 @@ if(isset($_GET['code'])) {
 }
 
 echo '<br><br><a href="' . $service->getOAuthUrl('https://your-domain/login.php') . '">Login using MercadoLibre oAuth 2.0</a>';
+```
+
+Caso queira enviar o parâmetro state, é possível fazê-lo, como no exemplo:
+```php
+echo '<br><br><a href="' . $service->getOAuthUrl('https://your-domain/login.php', 'your-state-value') . '">Login using MercadoLibre oAuth 2.0</a>';
 ```
 
 > ##### Exemplo de autenticação Server Side
